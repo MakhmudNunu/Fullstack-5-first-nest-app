@@ -3,7 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Product, ProductDocument, Category } from './schemas/product.schema';
 import { Model, SortOrder } from 'mongoose';
 import { CreateProductDto } from './dto/create-product.dto';
-import { GetProductsFilterDto } from './dto/filter-products.dto';
+import {
+  GetProductsFilterDto,
+  SortOrder as DtoSortOrder,
+} from './dto/filter-products.dto';
 import { IdParamDto } from './dto/id-param.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 
@@ -33,7 +36,8 @@ export class ProductsService {
     const query: Partial<IQuery> = {};
 
     if (search) {
-      query.title = { $regex: search, $options: 'i' };
+      const escaped = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      query.title = { $regex: escaped, $options: 'i' };
     }
 
     if (category) {
@@ -43,18 +47,18 @@ export class ProductsService {
     // Сортировка
 
     interface ISort {
-      title?: SortOrder
-      price?: SortOrder
+      title?: SortOrder;
+      price?: SortOrder;
     }
 
     const sort: Partial<ISort> = {};
 
     if (sortTitle) {
-      sort.title = sortTitle === 'asc' ? 1 : -1;
+      sort.title = sortTitle === DtoSortOrder.ASC ? 1 : -1;
     }
 
     if (sortPrice) {
-      sort.price = sortPrice === 'asc' ? 1 : -1;
+      sort.price = sortPrice === DtoSortOrder.ASC ? 1 : -1;
     }
 
     // Пагинация
