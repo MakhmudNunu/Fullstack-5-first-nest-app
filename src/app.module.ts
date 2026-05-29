@@ -2,26 +2,29 @@ import { Module } from '@nestjs/common';
 import { ProductsModule } from './products/products.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-
-// Способ оргинизации кода, помогает сделать код чище и читабельнее
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
-    // Даём доступ к env переменным для всего приложения
     ConfigModule.forRoot({
-      isGlobal: true
+      isGlobal: true,
     }),
 
-    // Получаем доступ к базе данных MongoDBAtlas
-    MongooseModule.forRoot(
-      process.env.MONGO_URI!
-    ),
+    ThrottlerModule.forRoot({
+      throttlers: [{ ttl: 60_000, limit: 30 }],
+    }),
 
-    // Импорт других модулей
-    ProductsModule
+    MongooseModule.forRoot(process.env.MONGO_URI!),
+
+    ProductsModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
-
 export class AppModule {}
