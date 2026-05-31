@@ -1,5 +1,7 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString, Min } from "class-validator";
-import { Category } from "../schemas/product.schema";
+import type { Category } from "../types/category.type";
+
+
 
 export class CreateProductDto {
     @IsString({ message: "Название должно быть строкой" })

@@ -1,13 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import { Document } from "mongoose";
-
-export type Category =
-  | 'Молочные'
-  | 'Мясо'
-  | 'Овощи и фрукты'
-  | 'Напитки'
-  | 'Бакалея'
-  | 'Ноутбуки';
+import type { Category } from "../types/category.type";
 
 export type ProductDocument = Product & Document
 

@@ -1,7 +1,8 @@
 import { IsEnum, IsInt, IsOptional, IsString, Min } from "class-validator"
-import { Category } from "../schemas/product.schema"
-import { parse } from "path"
+
+
 import { Transform } from "class-transformer"
+import type { Category } from "../types/category.type"
 
 export enum SortOrder {
     ASC = 'asc',
